@@ -1,0 +1,41 @@
+services:
+  grafana:
+    image: grafana:local-dev
+    build:
+      context: ..
+      dockerfile: docker-private/Dockerfile
+      network: host
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=yandexcloud-logging-datasource
+      - GF_PATHS_PLUGINS=/data/plugins
+      - GF_DATABASE_TYPE=postgres
+      - GF_DATABASE_HOST=postgres:5432
+      - GF_DATABASE_NAME=grafana
+      - GF_DATABASE_USER=postgres
+      - GF_DATABASE_PASSWORD=password
+      - GF_DATABASE_SSL_MODE=disable
+    volumes:
+      - grafana:/var/lib/grafana
+      - /etc/ssl/certs/:/etc/ssl/certs/
+  postgres:
+    container_name: postgres
+    image: postgres
+    ports:
+        - 5432:5432
+    environment:
+      - POSTGRES_DB=grafana
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+        - postgres:/var/lib/postgresql/data
+volumes:
+  grafana:
+  postgres:

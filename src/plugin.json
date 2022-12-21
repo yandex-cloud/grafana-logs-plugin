@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
+  "type": "datasource",
+  "name": "Yandex Cloud Logging",
+  "id": "yandexcloud-logging-datasource",
+  "metrics": false,
+  "logs": true,
+  "backend": true,
+  "executable": "yc-logs-plugin",
+  "alerting": false,
+  "info": {
+    "description": "Datasource for Yandex Cloud Logging",
+    "author": {
+      "name": "Andrey Mitrofanov",
+      "url": ""
+    },
+    "keywords": [
+      "logs",
+      "yandex"
+    ],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/grafana/grafana-starter-datasource"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/grafana/grafana-starter-datasource/blob/master/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaDependency": ">=7.0.0",
+    "plugins": []
+  }
+}
