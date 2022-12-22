@@ -5,8 +5,8 @@ import {
   Field, TextArea, Input, InlineFieldRow, InlineField, MultiSelect, Select, TagsInput
 } from '@grafana/ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
-import { DataSource } from './datasource';
-import { defaultQuery, knownLevels, LoggingSourceOptions, LoggingQuery } from './types';
+import { DataSource } from '../datasource';
+import { defaultQuery, knownLevels, LoggingSourceOptions, LoggingQuery } from '../types';
 
 
 type Props = QueryEditorProps<DataSource, LoggingQuery, LoggingSourceOptions>;

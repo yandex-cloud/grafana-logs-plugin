@@ -1,7 +1,7 @@
 import React, { ChangeEvent, PureComponent } from 'react';
 import { Field, Input, SecretTextArea } from '@grafana/ui';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
-import { LoggingSourceOptions, LoggingSecureJsonData, defaultSourceOptions } from './types';
+import { LoggingSourceOptions, LoggingSecureJsonData, defaultSourceOptions } from '../types';
 import { defaults } from 'lodash';
 
 interface Props extends DataSourcePluginOptionsEditorProps<LoggingSourceOptions> { }
