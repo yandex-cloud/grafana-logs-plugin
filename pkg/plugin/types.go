@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+
+	"github.com/cbroglie/mustache"
 )
 
 type Level uint8
@@ -68,6 +70,7 @@ func (l *Level) UnmarshalText(text []byte) error {
 
 type logEntriesValues struct {
 	extractFields []string
+	derivedRules  map[string]*mustache.Template
 
 	timestamps    []time.Time
 	contents      []string
@@ -78,6 +81,18 @@ type logEntriesValues struct {
 	resourceIDs   []string
 	messages      []string
 	payloads      []string
+	derived       map[string][]*string
+}
+
+func (v *logEntriesValues) addDerivedRules(rules []derivedFieldRule) {
+	if v.derivedRules == nil {
+		v.derivedRules = make(map[string]*mustache.Template)
+	}
+	for _, rule := range rules {
+		if tmpl, err := mustache.ParseString(rule.Template); err == nil {
+			v.derivedRules[rule.Name] = tmpl
+		}
+	}
 }
 
 func (v *logEntriesValues) append(
@@ -90,6 +105,7 @@ func (v *logEntriesValues) append(
 	message string,
 	payload map[string]any,
 ) {
+
 	v.timestamps = append(v.timestamps, timestamp.UTC())
 	v.levels = append(v.levels, level.String())
 	v.ids = append(v.ids, id)
@@ -99,11 +115,29 @@ func (v *logEntriesValues) append(
 	v.messages = append(v.messages, message)
 	v.payloads = append(v.payloads, v.jsonValue(payload))
 
+	derived := make(map[string]string, len(v.derivedRules))
+	if len(v.derivedRules) > 0 && v.derived == nil {
+		v.derived = make(map[string][]*string)
+	}
+	for name, tmpl := range v.derivedRules {
+		value, err := tmpl.Render(payload)
+		derived[name] = value
+		if err != nil {
+			v.derived[name] = append(v.derived[name], nil)
+			continue
+		}
+		v.derived[name] = append(v.derived[name], &value)
+	}
+
 	content := "{}"
 	if len(v.extractFields) > 0 {
 		extractedFields := make(map[string]any, len(v.extractFields))
 		for _, k := range v.extractFields {
 			if v := payload[k]; v != nil {
+				extractedFields[k] = v
+				continue
+			}
+			if v := derived[k]; v != "" {
 				extractedFields[k] = v
 			}
 		}

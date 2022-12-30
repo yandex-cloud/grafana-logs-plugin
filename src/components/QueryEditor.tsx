@@ -2,11 +2,12 @@ import defaults from 'lodash/defaults';
 
 import React, { ChangeEvent, PureComponent } from 'react';
 import {
-  Field, TextArea, Input, InlineFieldRow, InlineField, MultiSelect, Select, TagsInput
+  Field, Input, InlineFieldRow, InlineField, MultiSelect, Select, TagsInput, QueryField
 } from '@grafana/ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from '../datasource';
 import { defaultQuery, knownLevels, LoggingSourceOptions, LoggingQuery } from '../types';
+import { DerivedFieldData, DerivedFields } from './Derived';
 
 
 type Props = QueryEditorProps<DataSource, LoggingQuery, LoggingSourceOptions>;
@@ -83,9 +84,9 @@ export class QueryEditor extends PureComponent<Props, State> {
     this.runQueryIfNeeded();
   };
 
-  onQueryTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+  onQueryTextChange = (value: string) => {
     const { onChange, query } = this.props;
-    onChange({ ...query, queryText: event.target.value });
+    onChange({ ...query, queryText: value });
   };
 
   onStreamChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -112,9 +113,15 @@ export class QueryEditor extends PureComponent<Props, State> {
     this.runQueryIfNeeded();
   };
 
+  onDerivativeFieldsChange = (values: DerivedFieldData[]) => {
+    const { onChange, query } = this.props;
+    const derivedFields = values.map((item) => ({ name: item.name, template: item.value }))
+    onChange({ ...query, derivedFields });
+    this.runQueryIfNeeded();
+  };
+
   runQueryIfNeeded = () => {
     const { query, onRunQuery } = this.props;
-    console.log(query)
     if (!query.groupId) {
       return;
     }
@@ -127,10 +134,10 @@ export class QueryEditor extends PureComponent<Props, State> {
   render() {
     this.updateCache()
 
-
+    const { onRunQuery } = this.props
     const query = defaults(this.props.query, defaultQuery);
     const { cache } = this.state
-    const { groupId, limit, levels, stream, resourceIds, resourceType, queryText, addPayloadFields } = query;
+    const { groupId, limit, levels, stream, resourceIds, resourceType, queryText, addPayloadFields, derivedFields } = query;
 
     const levelsOptions: Array<SelectableValue<string>> = knownLevels.map((l): SelectableValue<string> => ({ value: l, label: l }));
     const groupOptions: Array<SelectableValue<string>> = [
@@ -145,6 +152,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     const resourceIdsOptions: Array<SelectableValue<string>> = [
       ...(resourceIds || []), ...(cache.resourceIds || [])
     ].filter((v, i, a) => a.indexOf(v) === i).map((l): SelectableValue<string> => ({ value: l, label: l }))
+    const fields: DerivedFieldData[] = (derivedFields || []).map((item) => ({ name: item.name, value: item.template }))
 
     return (
       <div>
@@ -201,19 +209,29 @@ export class QueryEditor extends PureComponent<Props, State> {
             />
           </InlineField>
         </InlineFieldRow>
-        <Field label='Filter query' description='Query to filter log records'>
-          <TextArea
-            name='query-text'
-            value={queryText}
+        <Field label='Filter query'>
+          <QueryField
+            query={queryText}
+            placeholder="Type filter query (Shift+Enter to run)"
+            portalOrigin="yclogging"
             onChange={this.onQueryTextChange}
+            onRunQuery={onRunQuery}
           />
         </Field>
-        <InlineField label="Add payload fields to content" >
+        <Field label="Add payload fields to content" >
           <TagsInput
+            placeholder='New field (Enter key to add)'
             onChange={this.onAddPayloadFieldsChange}
+            addOnBlur={true}
             tags={addPayloadFields}
           />
-        </InlineField>
+        </Field>
+        <Field label="Derivative fields">
+          <DerivedFields
+            fields={fields}
+            onChange={this.onDerivativeFieldsChange}
+          />
+        </Field>
       </div >
     );
   };

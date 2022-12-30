@@ -3,8 +3,8 @@ module yc-logging
 go 1.19
 
 require (
+	github.com/cbroglie/mustache v1.4.0
 	github.com/grafana/grafana-plugin-sdk-go v0.145.0
-	github.com/spf13/cobra v1.6.1
 	github.com/yandex-cloud/go-genproto v0.0.0-20221205100932-c2782a87f4d0
 	github.com/yandex-cloud/go-sdk v0.0.0-20221205101755-09e71e1b31e4
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
@@ -39,7 +39,6 @@ require (
 	github.com/hashicorp/go-multierror v1.0.0 // indirect
 	github.com/hashicorp/go-plugin v1.4.3 // indirect
 	github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d // indirect
-	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.13.1 // indirect
@@ -61,7 +60,6 @@ require (
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/unknwon/bra v0.0.0-20200517080246-1e3013ecaff8 // indirect
 	github.com/unknwon/com v1.0.1 // indirect
 	github.com/unknwon/log v0.0.0-20150304194804-e617c87089d3 // indirect

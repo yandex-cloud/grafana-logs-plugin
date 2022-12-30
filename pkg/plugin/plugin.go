@@ -60,6 +60,7 @@ func (o *loggingDatasource) QueryData(ctx context.Context, req *backend.QueryDat
 		}
 
 		values := logEntriesValues{extractFields: lr.AddPayloadFields}
+		values.addDerivedRules(lr.DerivedFields)
 		respD := resp.Responses[query.RefID]
 
 		entries, err := o.sdk.readEntries(ctx, lr, query.TimeRange.From, query.TimeRange.To)
@@ -85,7 +86,7 @@ func (o *loggingDatasource) QueryData(ctx context.Context, req *backend.QueryDat
 			)
 		}
 
-		frame := data.NewFrame(query.RefID,
+		fields := []*data.Field{
 			data.NewField("timestamp", nil, values.timestamps),
 			data.NewField("content", data.Labels{"group": lr.GroupID}, values.contents),
 			data.NewField("level", nil, values.levels),
@@ -95,7 +96,15 @@ func (o *loggingDatasource) QueryData(ctx context.Context, req *backend.QueryDat
 			data.NewField("resource.id", nil, values.resourceIDs),
 			data.NewField("message", nil, values.messages),
 			data.NewField("json_payload", nil, values.payloads),
-		)
+		}
+
+		for name, values := range values.derived {
+			fields = append(fields,
+				data.NewField(name, nil, values),
+			)
+		}
+
+		frame := data.NewFrame(query.RefID, fields...)
 		frame.SetMeta(&data.FrameMeta{
 			PreferredVisualization: data.VisTypeLogs,
 		})

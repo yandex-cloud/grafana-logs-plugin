@@ -3,6 +3,7 @@
   "type": "datasource",
   "name": "Yandex Cloud Logging",
   "id": "yandexcloud-logging-datasource",
+  "state": "alpha",
   "metrics": false,
   "logs": true,
   "backend": true,
@@ -37,7 +38,7 @@
     "updated": "%TODAY%"
   },
   "dependencies": {
-    "grafanaDependency": ">=7.0.0",
+    "grafanaDependency": ">=8.0.0",
     "plugins": []
   }
 }

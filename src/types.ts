@@ -9,6 +9,10 @@ export const knownLevels: string[] = [
   "FATAL",
 ];
 
+export interface DerivedFiledRule {
+  name: string;
+  template: string;
+}
 
 export interface LoggingQuery extends DataQuery {
   groupId: string;
@@ -20,6 +24,7 @@ export interface LoggingQuery extends DataQuery {
   resourceType?: string;
   resourceIds?: string[];
   addPayloadFields?: string[];
+  derivedFields?: DerivedFiledRule[];
 }
 
 export const defaultQuery: Partial<LoggingQuery> = {
