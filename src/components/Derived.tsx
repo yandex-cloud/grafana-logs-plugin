@@ -24,6 +24,7 @@ export const DerivedField: React.FC<DerivedFiedProps> = (props) => {
                 />}
                 placeholder='mustache template...'
                 value={curValue}
+                autoFocus={!curValue}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     setState({ ...state, curValue: event.target.value });
                 }}
