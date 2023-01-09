@@ -115,18 +115,23 @@ func (v *logEntriesValues) append(
 	v.messages = append(v.messages, message)
 	v.payloads = append(v.payloads, v.jsonValue(payload))
 
-	derived := make(map[string]string, len(v.derivedRules))
-	if len(v.derivedRules) > 0 && v.derived == nil {
-		v.derived = make(map[string][]*string)
-	}
-	for name, tmpl := range v.derivedRules {
-		value, err := tmpl.Render(payload)
-		derived[name] = value
-		if err != nil {
-			v.derived[name] = append(v.derived[name], nil)
-			continue
+	var derived map[string]string
+	if len(v.derivedRules) > 0 {
+		derived = make(map[string]string, len(v.derivedRules))
+		if len(v.derivedRules) > 0 && v.derived == nil {
+			v.derived = make(map[string][]*string)
 		}
-		v.derived[name] = append(v.derived[name], &value)
+
+		fields := renderCtx(timestamp, level, id, stream, resourceType, resourceID, message)
+		for name, tmpl := range v.derivedRules {
+			value, err := tmpl.Render(payload, fields)
+			derived[name] = value
+			if err != nil || value == "" {
+				v.derived[name] = append(v.derived[name], nil)
+				continue
+			}
+			v.derived[name] = append(v.derived[name], &value)
+		}
 	}
 
 	content := "{}"
@@ -152,4 +157,24 @@ func (logEntriesValues) jsonValue(val any) string {
 		return "{}"
 	}
 	return string(b)
+}
+
+func renderCtx(
+	timestamp time.Time,
+	level Level,
+	id string,
+	stream string,
+	resourceType string,
+	resourceID string,
+	message string,
+) map[string]any {
+	return map[string]any{
+		"timestamp":     timestamp,
+		"level":         level,
+		"id":            id,
+		"stream":        stream,
+		"resource_type": resourceType,
+		"resource_id":   resourceID,
+		"message":       message,
+	}
 }

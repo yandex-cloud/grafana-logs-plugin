@@ -32,12 +32,21 @@ export const defaultQuery: Partial<LoggingQuery> = {
   levels: knownLevels,
 };
 
+
+export interface LoggingDerivedLink {
+  field: string;
+  title: string;
+  url: string;
+  targetBlank: boolean;
+}
+
 /**
  * These are options configured for each DataSource instance
  */
 export interface LoggingSourceOptions extends DataSourceJsonData {
   apiEndpoint: string;
   folderId: string;
+  derivedLinks?: LoggingDerivedLink[];
 }
 
 /**

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from 'react';
-import { DeleteButton, Icon, IconButton, InlineField, InlineFieldRow, Input } from '@grafana/ui';
+import { Button, Field, IconButton, InlineField, InlineFieldRow, InlineSwitch, Input } from '@grafana/ui';
 
 interface DerivedFiedProps {
     name: string
@@ -17,13 +17,12 @@ export const DerivedField: React.FC<DerivedFiedProps> = (props) => {
         <InlineField label={name} transparent>
             <Input
                 key={name}
-                prefix={<Icon name='brackets-curly' />}
-                suffix={<DeleteButton
-                    closeOnConfirm
+                suffix={<IconButton
+                    name='times'
                     size="sm"
-                    onConfirm={onDelete}
+                    onClick={onDelete}
                 />}
-                placeholder='mustache template for field value'
+                placeholder='mustache template...'
                 value={curValue}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     setState({ ...state, curValue: event.target.value });
@@ -114,12 +113,14 @@ export const DerivedFields: React.FC<DerivedFieldsProps> = (props) => {
                     name={v.name}
                     value={v.value}
                     onChange={(v) => {
-                        fields[i].value = v
-                        onChange(fields)
+                        const newFields = [...fields]
+                        newFields[i].value = v
+                        onChange(newFields)
                     }}
                     onDelete={() => {
-                        fields.splice(i, 1)
-                        onChange(fields)
+                        const newFields = [...fields]
+                        newFields.splice(i, 1)
+                        onChange(newFields)
                     }}
                 />
             ))}
@@ -129,5 +130,102 @@ export const DerivedFields: React.FC<DerivedFieldsProps> = (props) => {
                 }}
             />
         </InlineFieldRow>
+    );
+}
+
+
+
+export interface DerivedLinkData {
+    name?: string;
+    title?: string;
+    url?: string;
+    targetBlank?: boolean;
+}
+
+interface DerivedLinkProps {
+    value: DerivedLinkData;
+    onChange: (value: DerivedLinkData) => void;
+    onDelete: () => void;
+}
+
+export const DerivedLink: React.FC<DerivedLinkProps> = (props) => {
+    const { value, onChange, onDelete } = props;
+
+    return (
+        <Field >
+            <InlineFieldRow>
+                <InlineField label="Field">
+                    <Input placeholder="field name..."
+                        value={value.name}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                            onChange({ ...value, name: event.target.value })
+                        }}
+                    />
+                </InlineField>
+                <InlineField label="Title">
+                    <Input placeholder="link title..."
+                        value={value.title}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                            onChange({ ...value, title: event.target.value })
+                        }}
+                    />
+                </InlineField>
+                <InlineField label="URL" grow>
+                    <Input type="url" placeholder="http://example.com/${__value.raw}"
+                        value={value.url || ""}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                            onChange({ ...value, url: event.target.value })
+                        }}
+                    />
+                </InlineField>
+                <InlineSwitch
+                    label="In new tab"
+                    showLabel={true}
+                    value={value.targetBlank || false}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                        onChange({ ...value, targetBlank: event.target.checked })
+                    }}
+                />
+                <Button icon='times' variant="destructive" onClick={onDelete} />
+            </InlineFieldRow>
+        </Field>
+    );
+}
+
+
+interface DerivedLinksProps {
+    links: DerivedLinkData[];
+    onChange: (links: DerivedLinkData[]) => void;
+}
+export const DerivedLinks: React.FC<DerivedLinksProps> = (props) => {
+    const { links, onChange } = props;
+
+    return (
+        <div>
+            {links.map((v, i) => (
+                <DerivedLink key={i}
+                    value={v}
+                    onChange={(newValue) => {
+                        const newLinks = [...links]
+                        newLinks.splice(i, 1, newValue)
+                        onChange(newLinks)
+                    }}
+                    onDelete={() => {
+                        const newLinks = [...links]
+                        newLinks.splice(i, 1)
+                        onChange(newLinks)
+                    }}
+                />
+            ))}
+            <Field>
+                <Button
+                    icon='plus'
+                    variant="secondary"
+                    onClick={() => onChange([...links, {}])}
+                >
+                    Add URL
+                </Button>
+            </Field>
+        </div>
     );
 }

@@ -27,6 +27,8 @@ type loggingDatasource struct {
 
 	sdk      *sdk
 	folderID string
+
+	links map[string][]data.DataLink
 }
 
 func NewLoggingDatasource(settings backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
@@ -39,10 +41,20 @@ func NewLoggingDatasource(settings backend.DataSourceInstanceSettings) (instance
 		return nil, fmt.Errorf("yc sdk: %w", err)
 	}
 
+	links := make(map[string][]data.DataLink)
+	for _, dl := range pubConfig.DerivedLinks {
+		links[dl.Field] = append(links[dl.Field], data.DataLink{
+			Title:       dl.Title,
+			URL:         dl.URL,
+			TargetBlank: dl.TargetBlank,
+		})
+	}
+
 	return &loggingDatasource{
 		logger:   log.DefaultLogger,
 		sdk:      sdk,
 		folderID: pubConfig.FolderID,
+		links:    links,
 	}, nil
 }
 
@@ -87,21 +99,19 @@ func (o *loggingDatasource) QueryData(ctx context.Context, req *backend.QueryDat
 		}
 
 		fields := []*data.Field{
-			data.NewField("timestamp", nil, values.timestamps),
-			data.NewField("content", data.Labels{"group": lr.GroupID}, values.contents),
-			data.NewField("level", nil, values.levels),
-			data.NewField("id", nil, values.ids),
-			data.NewField("stream", nil, values.streams),
-			data.NewField("resource.type", nil, values.resourceTypes),
-			data.NewField("resource.id", nil, values.resourceIDs),
-			data.NewField("message", nil, values.messages),
-			data.NewField("json_payload", nil, values.payloads),
+			o.setFieldLinks(data.NewField("timestamp", nil, values.timestamps)),
+			o.setFieldLinks(data.NewField("content", data.Labels{"group": lr.GroupID}, values.contents)),
+			o.setFieldLinks(data.NewField("level", nil, values.levels)),
+			o.setFieldLinks(data.NewField("id", nil, values.ids)),
+			o.setFieldLinks(data.NewField("stream", nil, values.streams)),
+			o.setFieldLinks(data.NewField("resource_type", nil, values.resourceTypes)),
+			o.setFieldLinks(data.NewField("resource_id", nil, values.resourceIDs)),
+			o.setFieldLinks(data.NewField("message", nil, values.messages)),
+			o.setFieldLinks(data.NewField("json_payload", nil, values.payloads)),
 		}
 
 		for name, values := range values.derived {
-			fields = append(fields,
-				data.NewField(name, nil, values),
-			)
+			fields = append(fields, o.setFieldLinks(data.NewField(name, nil, values)))
 		}
 
 		frame := data.NewFrame(query.RefID, fields...)
@@ -146,6 +156,18 @@ func (o *loggingDatasource) Dispose() {
 		o.logger.Error("plugin dispose error", "error", err.Error())
 	}
 
+}
+
+func (o *loggingDatasource) setFieldLinks(field *data.Field) *data.Field {
+	fieldLinks := o.links[field.Name]
+	if len(fieldLinks) == 0 {
+		return field
+	}
+	if field.Config == nil {
+		field.SetConfig(&data.FieldConfig{})
+	}
+	field.Config.Links = append(([]data.DataLink)(nil), fieldLinks...)
+	return field
 }
 
 func (o *loggingDatasource) suggestQuery(ctx context.Context, req *backend.CallResourceRequest, sender backend.CallResourceResponseSender) error {

@@ -15,8 +15,16 @@ type loggingRequest struct {
 const apiKeyJsonInSettings = "apiKeyJson"
 
 type loggingConfig struct {
-	APIEndpoint string `json:"apiEndpoint"`
-	FolderID    string `json:"folderId"`
+	APIEndpoint  string              `json:"apiEndpoint"`
+	FolderID     string              `json:"folderId"`
+	DerivedLinks []derivedLinkConfig `json:"derivedLinks"`
+}
+
+type derivedLinkConfig struct {
+	Field       string `json:"field"`
+	Title       string `json:"title"`
+	URL         string `json:"url"`
+	TargetBlank bool   `json:"targetBlank"`
 }
 
 type suggestQueryRequest struct {
