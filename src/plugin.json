@@ -26,14 +26,19 @@
     "links": [
       {
         "name": "Website",
-        "url": "https://github.com/grafana/grafana-starter-datasource"
+        "url": "https://github.com/yandex-cloud/grafana-logs-plugine"
       },
       {
         "name": "License",
-        "url": "https://github.com/grafana/grafana-starter-datasource/blob/master/LICENSE"
+        "url": "https://github.com/yandex-cloud/grafana-logs-plugin/blob/master/LICENSE"
       }
     ],
-    "screenshots": [],
+    "screenshots": [
+      {
+        "name": "Explore",
+        "path": "img/explore.png"
+      }
+    ],
     "version": "%VERSION%",
     "updated": "%TODAY%"
   },
