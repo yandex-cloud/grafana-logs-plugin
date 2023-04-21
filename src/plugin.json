@@ -3,7 +3,7 @@
   "type": "datasource",
   "name": "Yandex Cloud Logging",
   "id": "yandexcloud-logging-datasource",
-  "state": "alpha",
+  "state": "beta",
   "metrics": false,
   "logs": true,
   "backend": true,
