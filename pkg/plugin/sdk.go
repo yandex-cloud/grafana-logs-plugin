@@ -70,7 +70,7 @@ func (s *sdk) readEntries(ctx context.Context, req loggingRequest, from time.Tim
 			remains = len(resp.Entries)
 		}
 		entries = append(entries, resp.Entries[:remains]...)
-		if len(resp.Entries) < int(pageSize) || resp.NextPageToken == "" {
+		if resp.NextPageToken == "" {
 			break
 		}
 		inReq.Selector = &logging.ReadRequest_PageToken{PageToken: resp.NextPageToken}
