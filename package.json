@@ -1,6 +1,6 @@
 {
   "name": "yandexcloud-logging-datasource",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Datasource for yandex cloud logging",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
