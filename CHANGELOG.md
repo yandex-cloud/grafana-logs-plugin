@@ -1,5 +1,7 @@
 # Changelog
 
+Update dependencies
+
 ## 1.0.1
 
 Fix logs read stop conditions
