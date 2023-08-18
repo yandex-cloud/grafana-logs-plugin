@@ -1,6 +1,6 @@
 {
   "name": "yandexcloud-logging-datasource",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Datasource for yandex cloud logging",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
@@ -17,7 +17,7 @@
     "unsigned-server": "docker-compose -f ./docker-private/docker-compose.yaml up -d --build"
   },
   "author": "Yandexcloud",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.16.7",
     "@grafana/e2e": "9.2.5",

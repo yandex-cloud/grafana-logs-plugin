@@ -12,8 +12,8 @@
   "info": {
     "description": "Datasource for Yandex Cloud Logging",
     "author": {
-      "name": "Andrey Mitrofanov",
-      "url": ""
+      "name": "YANDEX LLC",
+      "url": "https://cloud.yandex.com/"
     },
     "keywords": [
       "logs",

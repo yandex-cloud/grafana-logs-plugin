@@ -1,5 +1,8 @@
 # Changelog
+## 1.1.0
 
+Make public
+Update License
 Update dependencies
 
 ## 1.0.1
