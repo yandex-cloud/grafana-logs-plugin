@@ -4,9 +4,11 @@
 
 Плагин позволяет сервисам и приложениям читать записи из лог-групп, используя [язык фильтрующих выражений](https://cloud.yandex.ru/docs/logging/concepts/filter).
 
-## Установка
+## Требования
 
-Чтобы установить плагин, воспользуйтесь [инструкцией](https://cloud.yandex.ru/docs/logging/tutorial/grafana-logs-plugin).
+1. [Создайте сервисный аккаунт](https://cloud.yandex.ru/docs/iam/operations/sa/create#create-sa) и назначьте ему роль `logging.reader` на каталог.
+1. [Создайте авторизованный ключ](https://cloud.yandex.ru/docs/iam/operations/authorized-key/create) для сервисного аккаунта, чтобы аутентифицироваться в Cloud Logging API.
+1. [Создайте лог-группу](https://cloud.yandex.ru/docs/logging/operations/create-group) и [добавьте](https://cloud.yandex.ru/docs/logging/operations/write-logs) в нее записи.
 
 ## Поддержка
 
