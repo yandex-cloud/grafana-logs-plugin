@@ -1,36 +1,23 @@
-# Yandex Cloud Logging Data Source
+# Плагин Yandex Cloud Logging для Grafana
 
-## Introduction
+Плагин Yandex Cloud Logging для Grafana — расширение для Grafana, с помощью которого можно добавить [Cloud Logging](https://cloud.yandex.ru/services/logging) в качестве источника данных.
 
-The Yandex Cloud Logging Grafana Plugin can be used to extend Grafana by adding
-[Cloud Logging](https://cloud.yandex.com/en/services/logging) as a data source in Grafana.
+Плагин позволяет сервисам и приложениям читать записи из лог-групп, используя [язык фильтрующих выражений](https://cloud.yandex.ru/docs/logging/concepts/filter).
 
-The plugin allows you to  query entries stored in logging groups in cloud store by
-services or by user applications using [filter expression language](https://cloud.yandex.com/en/docs/logging/concepts/filter).
+## Требования
 
-## Prerequisites
+1. [Создайте сервисный аккаунт](https://cloud.yandex.ru/docs/iam/operations/sa/create#create-sa) и назначьте ему роль `logging.reader` на каталог.
+1. [Создайте авторизованный ключ](https://cloud.yandex.ru/docs/iam/operations/authorized-key/create) для сервисного аккаунта, чтобы аутентифицироваться в Cloud Logging API.
+1. [Создайте лог-группу](https://cloud.yandex.ru/docs/logging/operations/create-group) и [добавьте](https://cloud.yandex.ru/docs/logging/operations/write-logs) в нее записи.
 
-You should have Yandex Cloud account and configured log group with some records see [quick start guide](https://cloud.yandex.com/en/docs/logging/quickstart)
+## Поддержка
 
-When you have log group you should create [service account](https://cloud.yandex.com/en/docs/iam/concepts/users/service-accounts)
-and generate [api key](https://cloud.yandex.com/en/docs/iam/concepts/authorization/api-key) for authorization in Logging API.
+Чтобы задать вопросы о плагине или рассказать о проблемах, которые возникли при работе с ним, заведите issue в репозитории [yandex-cloud/grafana-logs-plugin](https://github.com/yandex-cloud/grafana-logs-plugin).
 
-Service account should have following roles in folder with log group:
-- `logging.reader` for getting log entries
-- `logging.viewer` for log groups listing
+## Контрибьюты
 
+Мы рады развивать плагин совместно с сообществом. Перед тем как сделать PR, ознакомьтесь с [руководством](https://github.com/yandex-cloud/grafana-logs-plugin/blob/master/CONTRIBUTING.md).
 
-## Help
+## Лицензия
 
-Issues and questions about this plugin can be posted as an issue in this GitHub repository.
-
-## Contributing
-
-This project welcomes contributions from the community. Before submitting a pull
-request, please review our contribution guide.
-
-## License
-
-Licensed under the Apache License, Version 2.0
-
-See LICENSE
+[Лицензия Apache, версия 2.0](https://github.com/yandex-cloud/grafana-logs-plugin/blob/master/CONTRIBUTING.md)
